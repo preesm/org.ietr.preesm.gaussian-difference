@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scenario>
+    <flags>
+        <sizesAreInBit/>
+    </flags>
+    <files>
+        <algorithm url="/org.ietr.preesm.gaussian-difference/Algo/gaussian_difference.pi"/>
+        <architecture url="/org.ietr.preesm.gaussian-difference/Archi/PYNQ.slam"/>
+        <codegenDirectory url="/org.ietr.preesm.gaussian-difference/Code/generated"/>
+    </files>
+    <constraints excelUrl="">
+        <constraintGroup>
+            <operator name="Zynq"/>
+            <task name="gaussian_difference/GaussianBlur1"/>
+            <task name="gaussian_difference/GaussianBlur2"/>
+            <task name="gaussian_difference"/>
+            <task name="gaussian_difference/Difference"/>
+        </constraintGroup>
+    </constraints>
+    <timings excelUrl="">
+        <timing opname="FPGA" time="390072"
+            timingtype="EXECUTION_TIME" vertexname="gaussian_difference/GaussianBlur1"/>
+        <timing opname="FPGA" time="390072"
+            timingtype="INITIATION_INTERVAL" vertexname="gaussian_difference/GaussianBlur1"/>
+        <timing opname="FPGA" time="390072"
+            timingtype="EXECUTION_TIME" vertexname="gaussian_difference/GaussianBlur2"/>
+        <timing opname="FPGA" time="390072"
+            timingtype="INITIATION_INTERVAL" vertexname="gaussian_difference/GaussianBlur2"/>
+        <timing opname="FPGA" time="1"
+            timingtype="INITIATION_INTERVAL" vertexname="gaussian_difference/Difference"/>
+        <timing opname="FPGA" time="1"
+            timingtype="EXECUTION_TIME" vertexname="gaussian_difference/Difference"/>
+        <memcpyspeed opname="FPGA" setuptime="1" timeperunit="0.001"/>
+    </timings>
+    <simuParams>
+        <mainCore/>
+        <mainComNode/>
+        <averageDataSize>1000</averageDataSize>
+        <dataTypes>
+            <dataType name="ap_uint&lt;8>" size="8"/>
+        </dataTypes>
+        <specialVertexOperators>
+            <specialVertexOperator path="Zynq"/>
+        </specialVertexOperators>
+    </simuParams>
+    <parameterValues/>
+    <papifyConfigs xmlUrl=""/>
+    <energyConfigs xmlUrl="">
+        <performanceObjective objectiveEPS="0.0"/>
+        <pePower opName="Base" pePower="10.0"/>
+        <pePower opName="FPGA" pePower="10.0"/>
+        <peActorsEnergy/>
+    </energyConfigs>
+</scenario>
