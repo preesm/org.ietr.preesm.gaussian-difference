@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+    <key attr.name="parameters" for="graph" id="parameters"/>
+    <key attr.name="variables" for="graph" id="variables"/>
+    <key attr.name="arguments" for="node" id="arguments"/>
+    <key attr.name="name" attr.type="string" for="graph"/>
+    <key attr.name="graph_desc" attr.type="string" for="node"/>
+    <key attr.name="delay" attr.type="string" for="edge"/>
+    <graph edgedefault="directed">
+        <data key="name">gaussian_difference_cyclic</data>
+        <node expr="540" id="ROWS" kind="param"/>
+        <node expr="720" id="COLS" kind="param"/>
+        <node id="input" kind="src">
+            <port annotation="NONE" expr="ROWS*COLS"
+                kind="output" name="input"/>
+        </node>
+        <node id="GaussianBlur1" kind="actor">
+            <data key="graph_desc">Code/include/gaussian_blur.hpp</data>
+            <loop isCPPdefinition="true" name="gaussian_blur&lt;ROWS,COLS,T>">
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="src" type="hls::stream&lt;T>"/>
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="snk" type="hls::stream&lt;T>"/>
+            </loop>
+            <port kind="cfg_input" name="ROWS"/>
+            <port kind="cfg_input" name="COLS"/>
+            <port annotation="NONE" expr="ROWS*COLS" kind="input" name="src"/>
+            <port annotation="NONE" expr="ROWS*COLS"
+                kind="output" name="snk"/>
+        </node>
+        <node id="Difference" kind="actor">
+            <data key="graph_desc">Code/include/arithmetic.hpp</data>
+            <loop isCPPdefinition="true" name="difference&lt;T>">
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="src1" type="hls::stream&lt;T>"/>
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="src2" type="hls::stream&lt;T>"/>
+                <param direction="OUT" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="snk" type="hls::stream&lt;T>"/>
+            </loop>
+            <port annotation="NONE" expr="1" kind="input" name="src1"/>
+            <port annotation="NONE" expr="1" kind="input" name="src2"/>
+            <port annotation="NONE" expr="1" kind="output" name="snk"/>
+        </node>
+        <node id="output" kind="snk">
+            <port annotation="NONE" expr="ROWS*COLS" kind="input" name="output"/>
+        </node>
+        <node id="GaussianBlur2" kind="actor">
+            <data key="graph_desc">Code/include/gaussian_blur.hpp</data>
+            <loop isCPPdefinition="true" name="gaussian_blur&lt;ROWS,COLS,T>">
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="src" type="hls::stream&lt;T>"/>
+                <param direction="IN" isCPPdefinition="true"
+                    isConfig="false" isPassedByReference="true"
+                    name="snk" type="hls::stream&lt;T>"/>
+            </loop>
+            <port kind="cfg_input" name="ROWS"/>
+            <port kind="cfg_input" name="COLS"/>
+            <port annotation="NONE" expr="ROWS*COLS" kind="input" name="src"/>
+            <port annotation="NONE" expr="ROWS*COLS"
+                kind="output" name="snk"/>
+        </node>
+        <node id="Broadcast" kind="broadcast">
+            <port annotation="NONE" expr="1" kind="input" name="src"/>
+            <port annotation="NONE" expr="1" kind="output" name="snk1"/>
+            <port annotation="NONE" expr="1" kind="output" name="snk2"/>
+        </node>
+        <node expr="COLS*ROWS" getter=""
+            id="Broadcast_snk2__GaussianBlur2_src" kind="delay"
+            level="permanent" setter="">
+            <port annotation="NONE" expr="COLS*ROWS" kind="input" name="set"/>
+            <port annotation="NONE" expr="COLS*ROWS"
+                kind="output" name="get"/>
+        </node>
+        <edge expr="COLS*ROWS" kind="fifo" source="Broadcast"
+            sourceport="snk2" target="GaussianBlur2"
+            targetport="src" type="ap_uint&lt;8>">
+            <data key="delay">Broadcast_snk2__GaussianBlur2_src</data>
+        </edge>
+        <edge kind="fifo" source="Difference" sourceport="snk"
+            target="Broadcast" targetport="src" type="ap_uint&lt;8>"/>
+        <edge kind="fifo" source="Broadcast" sourceport="snk1"
+            target="output" targetport="output" type="ap_uint&lt;8>"/>
+        <edge kind="fifo" source="GaussianBlur2" sourceport="snk"
+            target="Difference" targetport="src2" type="ap_uint&lt;8>"/>
+        <edge kind="fifo" source="GaussianBlur1" sourceport="snk"
+            target="Difference" targetport="src1" type="ap_uint&lt;8>"/>
+        <edge kind="fifo" source="input" sourceport="input"
+            target="GaussianBlur1" targetport="src" type="ap_uint&lt;8>"/>
+        <edge kind="dependency" source="ROWS" target="input"/>
+        <edge kind="dependency" source="COLS" target="input"/>
+        <edge kind="dependency" source="ROWS"
+            target="GaussianBlur1" targetport="ROWS"/>
+        <edge kind="dependency" source="COLS"
+            target="GaussianBlur1" targetport="COLS"/>
+        <edge kind="dependency" source="ROWS" target="output"/>
+        <edge kind="dependency" source="COLS" target="output"/>
+        <edge kind="dependency" source="ROWS"
+            target="GaussianBlur2" targetport="ROWS"/>
+        <edge kind="dependency" source="COLS"
+            target="GaussianBlur2" targetport="COLS"/>
+        <edge kind="dependency" source="COLS" target="Broadcast_snk2__GaussianBlur2_src"/>
+        <edge kind="dependency" source="ROWS" target="Broadcast_snk2__GaussianBlur2_src"/>
+    </graph>
+</graphml>
