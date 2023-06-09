@@ -3,7 +3,7 @@
     <dftools:scenario pluginId="org.ietr.preesm.scenario.task"/>
     <dftools:task pluginId="pisdf-synthesis.fpga-estimations" taskId="FPGA analysis">
         <dftools:data key="variables">
-            <dftools:variable name="Fifo evaluator: " value="adfgFifoEvalExact"/>
+            <dftools:variable name="Fifo evaluator: " value="adfgFifoEvalLinear"/>
             <dftools:variable name="Pack tokens ?" value="false"/>
             <dftools:variable name="Show schedule ?" value="false"/>
         </dftools:data>
