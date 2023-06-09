@@ -1,0 +1,3 @@
+config:
+- {scenario: gaussian_difference.scenario, workflow: FPGAanalysis.workflow}
+- {scenario: gaussian_difference_cyclic.scenario, workflow: FPGAanalysis.workflow}
